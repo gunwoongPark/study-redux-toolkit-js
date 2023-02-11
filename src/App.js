@@ -1,24 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import TodoItemView from "./components/TodoItemView";
+import { addTodo } from "./features/todo/todoSlice";
 
 function App() {
+  const dispatch = useDispatch();
+  const todoList = useSelector((state) => state.todo);
+
+  const [input, setInput] = useState("");
+  const id = useRef(1);
+
+  const onClickAddButton = () => {
+    dispatch(addTodo({ id: id.current, todo: input, isCheck: false }));
+    id.current += 1;
+    setInput("");
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1>STUDY REDUX TOOLKIT JS</h1>
+
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+      />
+      <button onClick={onClickAddButton}>ADD</button>
+
+      <ul>
+        {todoList.map((todo) => (
+          <TodoItemView key={todo.id} todo={todo} />
+        ))}
+      </ul>
+    </>
   );
 }
 
